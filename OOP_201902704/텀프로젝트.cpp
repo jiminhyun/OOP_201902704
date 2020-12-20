@@ -10,8 +10,8 @@ void ask();
 void page(string s);
 void readline();
 void readInstruction(string s);
-string sumVec(vector<string> v);
-void makeVec(string);
+void makeV(string);
+string sumV(vector<string> v);
 vector<string> v;
 int current = 0;
 int lineNum = 0;
@@ -28,7 +28,7 @@ int main()
 	if (myFile.is_open())
 	{
 		getline(myFile, str);
-		makeVec(str);
+		makeV(str);
 		readline();
 		ask();
 		myFile.close();
@@ -213,7 +213,7 @@ void TextEditor::Insert(int line, int num, string word)
 		}
 	}
 	v[index] = sum;
-	sumVec(v);
+	sumV(v);
 	current -= 20;
 	readline();
 
@@ -271,14 +271,14 @@ void TextEditor::Delete(int line, int num)
 	if (str[str.size() - 1] == ' ')
 	{
 		v[index] = sum;
-		sumVec(v);
+		sumV(v);
 
 	}
 	else
 	{
 		sum = sum.substr(0, sum.size() - 1);
 		v[index] = sum;
-		sumVec(v);
+		sumV(v);
 	}
 	current -= 20;
 	readline();
@@ -289,7 +289,7 @@ void TextEditor::Convert(string s1, string s2)
 	if (flag) {
 		flag = false;
 	}
-	string s = sumVec(v);
+	string s = sumV(v);
 	string change = "", sum = "", last = "";
 	int word = s.find(s1);
 	while (word != -1)
@@ -302,7 +302,7 @@ void TextEditor::Convert(string s1, string s2)
 		sum += change;
 	}
 	sum += last;
-	makeVec(sum);
+	makeV(sum);
 	current -= 20;
 	readline();
 }
@@ -343,7 +343,7 @@ void TextEditor::Save()
 {
 	ofstream writeFile;
 	writeFile.open("C:\\Users\\jimin\\Desktop\\학교\\2-2\\객체지향설계\\2020-2학기 객체지향설계 텀 프로젝트\\test.txt");
-	string save = sumVec(v);
+	string save = sumV(v);
 
 	if (writeFile.is_open())
 	{
@@ -353,18 +353,7 @@ void TextEditor::Save()
 	writeFile.close();
 }
 
-string sumVec(vector<string> vec)
-{
-	string s = "";
-	for (int i = 0; i < vec.size(); i++)
-	{
-		s += vec[i];
-	}
-	makeVec(s);
-	return s;
-}
-
-void makeVec(string s)
+void makeV(string s)
 {
 	istringstream st(s);
 	string cut = "", last = "";
@@ -391,14 +380,16 @@ void makeVec(string s)
 	line = line.substr(0, line.size() - 1);
 	v.push_back(line);
 }
-bool isInt(const string& s)
+
+string sumV(vector<string> vec)
 {
-	for (const char& c : s)
+	string s = "";
+	for (int i = 0; i < vec.size(); i++)
 	{
-		if (isdigit(c))
-			return true;
+		s += vec[i];
 	}
-	return false;
+	makeV(s);
+	return s;
 }
 
 void readInstruction(string instruction)
@@ -409,11 +400,6 @@ void readInstruction(string instruction)
 	vector<string> s;
 
 	error = instruction.find(' ');
-	if (error != string::npos) {
-		cout << "공백 없이 다시 입력하시오.\n";
-		return;
-	}
-
 	if (instruction.size() == 1)
 	{
 		if (instruction[0] == 'n' || instruction[0] == 'p')
@@ -433,6 +419,10 @@ void readInstruction(string instruction)
 			return;
 		}
 	}
+	else if (error != string::npos) {
+		cout << "공백 없이 다시 입력하시오.\n";
+		return;
+	}
 	else if (instruction.size() > 1)
 	{
 		if ((instruction[1] == '(') && (instruction[instruction.size() - 1] == ')'))
@@ -450,7 +440,7 @@ void readInstruction(string instruction)
 					cout << "인자 개수 오류. 다시 입력하시오.\n";
 					return;
 				}
-				if (!isInt(s[0]) && !isInt(s[1]))
+				else if (!isInt(s[0]) && !isInt(s[1]))
 				{
 					cout << "첫번째, 두번째 인자는 숫자로 입력하시오.\n";
 					return;
@@ -467,14 +457,14 @@ void readInstruction(string instruction)
 				{
 					s.push_back(buffer);
 				}
-				if (s.size() != 2)
-				{
-					cout << "인자 개수 오류. 다시 입력하시오.\n";
-					return;
-				}
 				if (!isInt(s[0]) && !isInt(s[1]))
 				{
 					cout << "첫번째, 두번째 인자는 숫자로 입력하시오. 다시 입력하시오.\n";
+					return;
+				}
+				else if (s.size() != 2)
+				{
+					cout << "인자 개수 오류. 다시 입력하시오.\n";
 					return;
 				}
 				line = atoi(s[0].c_str());
@@ -523,4 +513,13 @@ void readInstruction(string instruction)
 			return;
 		}
 	}
+}
+bool isInt(const string& s)
+{
+	for (const char& c : s)
+	{
+		if (isdigit(c))
+			return true;
+	}
+	return false;
 }
